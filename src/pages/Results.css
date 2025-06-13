@@ -1,0 +1,77 @@
+.results-container {
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.results-container h2 {
+  font-size: 1.4rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.place-card {
+  text-decoration: none;
+  color: inherit;
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.place-card:hover {
+  transform: translateY(-4px);
+}
+
+.place-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.place-card h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #2a8c82;
+}
+
+.place-card p {
+  margin: 0.4rem 0;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.category-tag {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 4px 8px;
+  background-color: #e6f2f1;
+  color: #2a8c82;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+
+/* 💻 Estilo para escritorio */
+@media (min-width: 768px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr); /* dos columnas en desktop */
+  }
+
+  .place-image {
+    height: 250px; /* más alto en escritorio */
+  }
+
+  .results-container h2 {
+    font-size: 1.8rem;
+    text-align: left;
+  }
+}
