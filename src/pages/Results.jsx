@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { searchPlaces } from '../api/foursquare'; // Este archivo debes crearlo
+import { searchPlaces } from '../api/foursquare';
+import { getCountryInfo } from '../api/restcountries'; 
 import defaultImg from '../assets/images/default.jpg';
 import './Results.css';
 
@@ -8,9 +9,12 @@ function Results() {
   const [searchParams] = useSearchParams();
   const category = searchParams.get('category');
   const location = searchParams.get('location');
+
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [countryInfo, setCountryInfo] = useState(null);
 
+  // Buscar lugares
   useEffect(() => {
     const fetchResults = async () => {
       if (location && category) {
@@ -23,10 +27,33 @@ function Results() {
     fetchResults();
   }, [location, category]);
 
+  // Buscar información del país
+  useEffect(() => {
+    const fetchInfo = async () => {
+      if (location) {
+        const info = await getCountryInfo(location);
+        setCountryInfo(info);
+      }
+    };
+    fetchInfo();
+  }, [location]);
+
   return (
     <div className="results-container">
       <h2>Results for "{category}" in {location}</h2>
 
+      {/* Información general del país */}
+      {countryInfo && (
+        <div className="destination-info">
+          <h3>🌍 Info about {countryInfo.name}</h3>
+          <img src={countryInfo.flag} alt={`Flag of ${countryInfo.name}`} width="100" />
+          <p><strong>Language:</strong> {countryInfo.language}</p>
+          <p><strong>Currency:</strong> {countryInfo.currency}</p>
+          <p><strong>Timezone:</strong> {countryInfo.timezone}</p>
+        </div>
+      )}
+
+      {/* Resultados */}
       {loading && <p>Loading...</p>}
       {!loading && results.length === 0 && <p>No results found.</p>}
 

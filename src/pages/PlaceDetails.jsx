@@ -3,6 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import './PlaceDetails.css';
+import InteractiveMap from '../components/InteractiveMap';
+import { getWeatherByCoords } from '../api/weather';
+import Itinerary from './Itinerary'; // Cambia si está en otra carpeta
 
 const API_KEY = import.meta.env.VITE_FOURSQUARE_API_KEY;
 
@@ -11,6 +14,7 @@ function PlaceDetails() {
   const navigate = useNavigate();
   const [place, setPlace] = useState(null);
   const [photos, setPhotos] = useState([]);
+  const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,27 +22,27 @@ function PlaceDetails() {
       try {
         const detailRes = await axios.get(
           `https://api.foursquare.com/v3/places/${id}`,
-          {
-            headers: {
-              Authorization: API_KEY,
-            },
-          }
+          { headers: { Authorization: API_KEY } }
         );
 
         const photoRes = await axios.get(
           `https://api.foursquare.com/v3/places/${id}/photos`,
-          {
-            headers: {
-              Authorization: API_KEY,
-            },
-          }
+          { headers: { Authorization: API_KEY } }
         );
 
-        setPlace(detailRes.data);
+        const placeData = detailRes.data;
+        console.log('PLACE DATA:', placeData); // 👈 Esto es útil para revisar campos
+        setPlace(placeData);
         setPhotos(photoRes.data);
-        setLoading(false);
+
+        const coords = placeData.geocodes?.main;
+        if (coords) {
+          const weatherData = await getWeatherByCoords(coords.latitude, coords.longitude);
+          setWeather(weatherData);
+        }
       } catch (error) {
         console.error('Error loading place details:', error);
+      } finally {
         setLoading(false);
       }
     };
@@ -73,6 +77,29 @@ function PlaceDetails() {
 
       <p>🗂️ {place.categories?.map((c) => c.name).join(', ')}</p>
 
+      {place.geocodes?.main && (
+        <>
+          <h3>Map</h3>
+          <InteractiveMap
+            lat={place.geocodes.main.latitude}
+            lon={place.geocodes.main.longitude}
+          />
+        </>
+      )}
+
+      {weather && (
+        <div className="weather-box">
+          <h3>Weather</h3>
+          <img
+            src={weather.icon}
+            alt="Weather Icon"
+            style={{ width: '60px', height: '60px' }}
+          />
+          <p>🌡️ Temp: {weather.temp}°C</p>
+          <p>🌤️ {weather.description}</p>
+        </div>
+      )}
+
       <h3>Photos</h3>
       <div className="photo-grid">
         {photos.length > 0 ? (
@@ -88,6 +115,8 @@ function PlaceDetails() {
           <p>No photos available.</p>
         )}
       </div>
+
+      <Itinerary placeName={place.name || 'your destination'} />
     </div>
   );
 }
