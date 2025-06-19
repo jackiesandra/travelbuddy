@@ -76,14 +76,14 @@ function PlaceDetails() {
       <p>🗂️ {place.categories?.map((c) => c.name).join(', ')}</p>
 
       {place.geocodes?.main && (
-        <>
-          <h3>Map</h3>
-          <InteractiveMap
-            lat={place.geocodes.main.latitude}
-            lon={place.geocodes.main.longitude}
-          />
-        </>
-      )}
+  <div className="map-wrapper">
+    <h3>Map</h3>
+    <InteractiveMap
+      lat={place.geocodes.main.latitude}
+      lon={place.geocodes.main.longitude}
+    />
+  </div>
+)}
 
       {weather && (
         <div className="weather-box">

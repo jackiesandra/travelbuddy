@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import './InteractiveMap.css'; // ✅ Asegúrate de que esta línea esté en la parte superior
 
 function InteractiveMap({ lat = 48.8566, lon = 2.3522 }) {
-  const mapRef = useRef(null); // referencia al div
-  const mapInstance = useRef(null); // referencia al mapa de Leaflet
+  const mapRef = useRef(null);
+  const mapInstance = useRef(null);
 
   useEffect(() => {
     if (mapRef.current && !mapInstance.current) {
@@ -20,7 +21,6 @@ function InteractiveMap({ lat = 48.8566, lon = 2.3522 }) {
         .openPopup();
     }
 
-    // Cleanup cuando el componente se desmonta
     return () => {
       if (mapInstance.current) {
         mapInstance.current.remove();
@@ -29,7 +29,7 @@ function InteractiveMap({ lat = 48.8566, lon = 2.3522 }) {
     };
   }, [lat, lon]);
 
-  return <div ref={mapRef} style={{ height: '400px', width: '100%', borderRadius: '8px' }} />;
+  return <div ref={mapRef} className="map-container" />;
 }
 
 export default InteractiveMap;

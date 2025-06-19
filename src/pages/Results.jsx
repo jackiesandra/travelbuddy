@@ -50,15 +50,6 @@ function Results() {
         </div>
       )}
 
-      <div style={{ marginBottom: '1rem' }}>
-        <Link
-          to={`/itinerary?place=${encodeURIComponent(location)}`}
-          className="itinerary-link"
-        >
-          View itinerary for {location}
-        </Link>
-      </div>
-
       {loading && <p>Loading...</p>}
       {!loading && results.length === 0 && <p>No results found.</p>}
 

@@ -1,14 +1,39 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getSuggestions } from '../api/foursquare';
 import destinationImg from '../assets/images/destination.jpg';
 
 function MainNavigation() {
   const navigate = useNavigate();
   const [destination, setDestination] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (destination.length > 2) {
+        const results = await getSuggestions(destination);
+        console.log(results); // 👈 Para confirmar estructura
+        // Aseguramos que solo se guarden strings para renderizar
+        setSuggestions(results.map((s) => s.text?.primary || ''));
+        setShowSuggestions(true);
+      } else {
+        setSuggestions([]);
+        setShowSuggestions(false);
+      }
+    };
+
+    fetchSuggestions();
+  }, [destination]);
+
+  const handleSuggestionClick = (text) => {
+    setDestination(text);
+    setShowSuggestions(false);
+  };
 
   const goToResults = (category) => {
     if (!destination) {
-      alert("Please enter a destination first.");
+      alert('Please enter a destination first.');
       return;
     }
     navigate(`/results?category=${category}&location=${destination}`);
@@ -18,13 +43,26 @@ function MainNavigation() {
     <div className="app-container">
       <header className="app-header">
         <h1>Travel Buddy</h1>
-        <input
-          type="text"
-          placeholder="🔍 Search Destination"
-          className="search-input"
-          value={destination}
-          onChange={(e) => setDestination(e.target.value)}
-        />
+        <div className="autocomplete-container">
+          <input
+            type="text"
+            placeholder="🔍 Search Destination"
+            className="search-input"
+            value={destination}
+            onChange={(e) => setDestination(e.target.value)}
+            onFocus={() => destination.length > 2 && setShowSuggestions(true)}
+            onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+          />
+          {showSuggestions && suggestions.length > 0 && (
+            <ul className="suggestions-list">
+              {suggestions.map((text, i) => (
+                <li key={i} onClick={() => handleSuggestionClick(text)}>
+                  {text}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </header>
 
       <main className="main-layout">
@@ -34,7 +72,12 @@ function MainNavigation() {
             <img
               src={destinationImg}
               alt="Popular destination"
-              style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                borderRadius: '8px',
+              }}
             />
           </div>
         </div>
