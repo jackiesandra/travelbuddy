@@ -14,7 +14,6 @@ function Results() {
   const [loading, setLoading] = useState(true);
   const [countryInfo, setCountryInfo] = useState(null);
 
-  // Buscar lugares
   useEffect(() => {
     const fetchResults = async () => {
       if (location && category) {
@@ -27,7 +26,6 @@ function Results() {
     fetchResults();
   }, [location, category]);
 
-  // Buscar información del país
   useEffect(() => {
     const fetchInfo = async () => {
       if (location) {
@@ -42,7 +40,6 @@ function Results() {
     <div className="results-container">
       <h2>Results for "{category}" in {location}</h2>
 
-      {/* Información general del país */}
       {countryInfo && (
         <div className="destination-info">
           <h3>🌍 Info about {countryInfo.name}</h3>
@@ -53,7 +50,15 @@ function Results() {
         </div>
       )}
 
-      {/* Resultados */}
+      <div style={{ marginBottom: '1rem' }}>
+        <Link
+          to={`/itinerary?place=${encodeURIComponent(location)}`}
+          className="itinerary-link"
+        >
+          View itinerary for {location}
+        </Link>
+      </div>
+
       {loading && <p>Loading...</p>}
       {!loading && results.length === 0 && <p>No results found.</p>}
 

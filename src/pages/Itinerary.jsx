@@ -6,19 +6,19 @@ import './Itinerary.css';
 
 function ItineraryPage() {
   const [searchParams] = useSearchParams();
-  const place = searchParams.get('place') || 'Paris';
+  const place = searchParams.get('place');
   const [weather, setWeather] = useState(null);
 
-  // Obtener clima
   useEffect(() => {
     async function fetchWeather() {
-      const data = await getWeatherByCity(place);
-      setWeather(data);
+      if (place) {
+        const data = await getWeatherByCity(place);
+        setWeather(data);
+      }
     }
     fetchWeather();
   }, [place]);
 
-  // Itinerario con ID único para drag & drop
   const [itinerary, setItinerary] = useState(() => {
     const saved = localStorage.getItem('userItinerary');
     return saved
@@ -33,12 +33,10 @@ function ItineraryPage() {
         ];
   });
 
-  // Guardar cambios en localStorage
   useEffect(() => {
     localStorage.setItem('userItinerary', JSON.stringify(itinerary));
   }, [itinerary]);
 
-  // Manejar reordenamiento
   const handleDragEnd = (result) => {
     if (!result.destination) return;
 

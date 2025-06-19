@@ -4,7 +4,7 @@ import Results from './pages/Results';
 import PlaceDetails from './pages/PlaceDetails';
 import ItineraryPage from './pages/Itinerary';
 import Hotels from './pages/Hotels';
-import Suggestions from './pages/Suggestions'; 
+import Suggestions from './pages/Suggestions';
 import './styles/main.css';
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
         <Route path="/place/:id" element={<PlaceDetails />} />
         <Route path="/itinerary" element={<ItineraryPage />} />
         <Route path="/hotels" element={<Hotels />} />
-        <Route path="/suggestions" element={<Suggestions city="New York" />} />
+        <Route path="/suggestions" element={<Suggestions />} />
       </Routes>
     </Router>
   );

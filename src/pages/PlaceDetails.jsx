@@ -5,7 +5,6 @@ import axios from 'axios';
 import './PlaceDetails.css';
 import InteractiveMap from '../components/InteractiveMap';
 import { getWeatherByCoords } from '../api/weather';
-import Itinerary from './Itinerary'; // Cambia si está en otra carpeta
 
 const API_KEY = import.meta.env.VITE_FOURSQUARE_API_KEY;
 
@@ -31,7 +30,6 @@ function PlaceDetails() {
         );
 
         const placeData = detailRes.data;
-        console.log('PLACE DATA:', placeData); // 👈 Esto es útil para revisar campos
         setPlace(placeData);
         setPhotos(photoRes.data);
 
@@ -116,7 +114,12 @@ function PlaceDetails() {
         )}
       </div>
 
-      <Itinerary placeName={place.name || 'your destination'} />
+      <button
+        onClick={() => navigate(`/itinerary?place=${encodeURIComponent(place.name)}`)}
+        className="itinerary-button"
+      >
+        📅 View Itinerary for {place.name}
+      </button>
     </div>
   );
 }
